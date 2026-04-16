@@ -57,6 +57,11 @@
 
 </script>
 
+<svelte:head>
+  <title>AFFILIOPINK | {searchQuery ? `Hasil Cari: ${searchQuery}` : 'Cari produk pink favoritmu'}</title>
+  <meta name="description" content="Temukan koleksi produk pink terbaik mulai dari fashion, gadget, hingga dekorasi di AFFILIOPINK." />
+</svelte:head>
+
 <div class="bg-decor">
   <div class="circle circle-1"></div>
   <div class="circle circle-2"></div>
@@ -81,6 +86,7 @@
 
     <div class="content">
       <header class="header">
+        <h1 class="sr-only">AFFILIOPINK - Katalog Produk Pink Terpercaya</h1>
         <div class="search-container">
           <span class="search-icon">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
