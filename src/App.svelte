@@ -32,7 +32,7 @@
   }
 
   let currentPage = 1;
-  const itemsPerPage = 4;
+  const itemsPerPage = 6;
 
   $: totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
   $: paginatedProducts = filteredProducts.slice(
