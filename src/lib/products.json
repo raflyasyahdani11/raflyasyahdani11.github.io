@@ -1,0 +1,50 @@
+[
+  {
+    "no": "001",
+    "title": "Logitech G435 Headset",
+    "desc": "Headset nyaman suara jernih.",
+    "img": "/images/headset.png"
+  },
+  {
+    "no": "002",
+    "title": "Natural Skincare Set",
+    "desc": "Set perawatan kulit harian.",
+    "img": "/images/skincare.png"
+  },
+  {
+    "no": "003",
+    "title": "Cute Travel Mug",
+    "desc": "Botol minum estetis.",
+    "img": "/images/mug.png"
+  },
+  {
+    "no": "004",
+    "title": "Botol Baksinore",
+    "desc": "Botol minum nyaman selalu.",
+    "img": "/images/bottle.png"
+  },
+  {
+    "no": "005",
+    "title": "Wireless Earbuds",
+    "desc": "Wireless earbuds suara jernih.",
+    "img": "/images/earbuds.png"
+  },
+  {
+    "no": "006",
+    "title": "Pink Keyboard",
+    "desc": "Pink Keyboard kulit hiral hin.",
+    "img": "/images/keyboard.png"
+  },
+  {
+    "no": "007",
+    "title": "Small Backpack",
+    "desc": "Botol minum son estetic.",
+    "img": "/images/backpack.png"
+  },
+  {
+    "no": "008",
+    "title": "Small Backpack",
+    "desc": "Botol minum nyaman suara jernih.",
+    "img": "/images/backpack.png"
+  }
+]
