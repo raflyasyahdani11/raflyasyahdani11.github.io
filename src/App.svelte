@@ -72,8 +72,8 @@
 <main class="container">
   <div class="main-layout">
     <aside class="curator-card">
-      <img src={curatorImg} alt="Saras" class="curator-img" />
-      <h2 class="curator-name">Saras, Pink Curator</h2>
+      <img src={curatorImg} alt="Raflya" class="curator-img" />
+      <h2 class="curator-name">Raflya, Pink Curator</h2>
       <p class="curator-bio">
         Mencari barang-barang pink terbaik untukmu. Diulas with cinta, ikuti terus untuk lebih banyak inspirasi!
       </p>
