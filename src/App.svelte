@@ -58,8 +58,8 @@
 </script>
 
 <svelte:head>
-  <title>AFFILIOPINK | {searchQuery ? `Hasil Cari: ${searchQuery}` : 'Cari produk pink favoritmu'}</title>
-  <meta name="description" content="Temukan koleksi produk pink terbaik mulai dari fashion, gadget, hingga dekorasi di AFFILIOPINK." />
+  <title>The Faith of Affiliate | {searchQuery ? `Hasil Cari: ${searchQuery}` : 'Cari produk pilihan favoritmu'}</title>
+  <meta name="description" content="Temukan koleksi produk pilihan terbaik mulai dari fashion, gadget, hingga dekorasi di The Faith of Affiliate." />
 </svelte:head>
 
 <div class="bg-decor">
@@ -73,9 +73,9 @@
   <div class="main-layout">
     <aside class="curator-card">
       <img src={curatorImg} alt="Raflya" class="curator-img" />
-      <h2 class="curator-name">Raflya, Pink Curator</h2>
+      <h2 class="curator-name">Raflya, Affiliate Curator</h2>
       <p class="curator-bio">
-        Mencari barang-barang pink terbaik untukmu. Diulas with cinta, ikuti terus untuk lebih banyak inspirasi!
+        Mencari barang-barang pilihan terbaik untukmu. Diulas with cinta, ikuti terus untuk lebih banyak inspirasi!
       </p>
       <div class="social-links">
         <span class="social-icon"><img src={instagramIcon} alt="Instagram" /></span>
@@ -86,7 +86,7 @@
 
     <div class="content">
       <header class="header">
-        <h1 class="sr-only">AFFILIOPINK - Katalog Produk Pink Terpercaya</h1>
+        <h1 class="sr-only">The Faith of Affiliate - Katalog Produk Terpercaya</h1>
         <div class="search-container">
           <span class="search-icon">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
@@ -94,7 +94,7 @@
           <input 
             type="text" 
             class="search-input" 
-            placeholder="Cari produk pink favoritmu..." 
+            placeholder="Cari produk pilihan favoritmu..." 
             bind:value={searchQuery}
           />
           {#if isSearching}
@@ -169,7 +169,7 @@
 <footer class="footer">
   <div class="footer-content">
     <div class="footer-top">
-      <p style="font-size: 0.95rem;">© 2026 AFFILIOPINK. Temukan produk favorit Anda! Ikuti kami:</p>
+      <p style="font-size: 0.95rem;">© 2026 The Faith of Affiliate. Temukan produk favorit Anda! Ikuti kami:</p>
       <div class="social-links" style="gap: 15px;">
         <span class="social-icon" style="filter: brightness(0) invert(1)"><img src={instagramIcon} alt="Instagram" /></span>
         <span class="social-icon" style="filter: brightness(0) invert(1)"><img src={tiktokIcon} alt="TikTok" /></span>
