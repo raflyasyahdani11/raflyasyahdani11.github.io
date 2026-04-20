@@ -9,10 +9,11 @@
     title: string;
     desc: string;
     img: string;
+    link?: string;
   }
 
   const products: Product[] = productsData;
-  const curatorImg = '/images/curator.png';
+  const curatorImg = '/images/3cc2cb34-25c8-480b-b590-ca330fdf9379.jpg';
 
   let searchQuery = "";
   let isSearching = false;
@@ -119,15 +120,17 @@
               <h3 class="product-title">{product.title}</h3>
               <p class="product-desc">{product.desc}</p>
             </div>
-            <button class="btn-check">CEK SEKARANG</button>
+            <a href={product.link || '#'} target="_blank" rel="noopener noreferrer" class="btn-check" style="text-decoration: none; display: block; text-align: center;">
+              CEK SEKARANG
+            </a>
           </div>
         {/each}
 
         {#if filteredProducts.length === 0}
           <div class="no-results">
-            <div class="no-results-icon">🌸</div>
+            <div class="no-results-icon">🤎</div>
             <h3>Produk tidak ditemukan</h3>
-            <p>Ups! Sepertinya produk pink yang kamu cari belum tersedia. Coba kata kunci lain!</p>
+            <p>Ups! Sepertinya produk pilihan yang kamu cari belum tersedia. Coba kata kunci lain!</p>
           </div>
         {/if}
       </div>
