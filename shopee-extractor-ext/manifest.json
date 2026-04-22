@@ -1,0 +1,16 @@
+{
+  "manifest_version": 3,
+  "name": "Shopee Data Extractor",
+  "version": "1.0",
+  "description": "Extract product title, description, and image from Shopee to JSON.",
+  "permissions": ["activeTab", "scripting", "clipboardWrite"],
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": ["*://shopee.co.id/*"],
+      "js": ["content.js"]
+    }
+  ]
+}
