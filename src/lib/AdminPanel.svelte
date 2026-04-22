@@ -52,6 +52,11 @@
     }
   }
 
+    } catch (e) {
+      console.error("Gagal hapus file gambar:", e);
+    }
+  }
+
   async function cleanupUnusedImages() {
     if (!confirm("Hapus semua file gambar yang tidak dipakai di tabel?")) return;
     

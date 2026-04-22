@@ -73,8 +73,12 @@ export default defineConfig(({ mode }) => {
                   const dirPath = path.resolve(__dirname, 'public/images/products');
                   if (!fs.existsSync(dirPath)) fs.mkdirSync(dirPath, { recursive: true });
                   
-                  // Clean filename
-                  const safeName = (filename || 'image').replace(/[^a-z0-9]/gi, '_').toLowerCase();
+                  // Clean and truncate filename to prevent "filename too long" error
+                  const safeName = (filename || 'product')
+                    .replace(/[^a-z0-9]/gi, '_')
+                    .replace(/_{2,}/g, '_') // Remove multiple underscores
+                    .toLowerCase()
+                    .substring(0, 30); // Max 30 chars
                   const finalName = `${safeName}_${Date.now()}.jpg`;
                   const filePath = path.join(dirPath, finalName);
                   
@@ -100,6 +104,36 @@ export default defineConfig(({ mode }) => {
                     }
                   }
                   res.end(JSON.stringify({ success: true }));
+                } catch (e) {
+                  res.statusCode = 500;
+                  res.end(JSON.stringify({ error: e.message }));
+                }
+              });
+            } else if (req.url === '/_admin/rename-image' && req.method === 'POST') {
+              let body = '';
+              req.on('data', chunk => { body += chunk; });
+              req.on('end', () => {
+                try {
+                  const { oldPath, newName } = JSON.parse(body);
+                  if (oldPath && oldPath.startsWith('/images/products/') && newName) {
+                    const dirPath = path.resolve(__dirname, 'public/images/products');
+                    const oldFullPath = path.resolve(__dirname, 'public', oldPath.slice(1));
+                    
+                    const safeName = newName.replace(/[^a-z0-9]/gi, '_').replace(/_{2,}/g, '_').toLowerCase().substring(0, 30);
+                    const newFileName = `${safeName}_${Date.now()}.jpg`;
+                    const newFullPath = path.join(dirPath, newFileName);
+
+                    if (fs.existsSync(oldFullPath)) {
+                      fs.renameSync(oldFullPath, newFullPath);
+                      res.end(JSON.stringify({ success: true, newPath: `/images/products/${newFileName}` }));
+                    } else {
+                      res.statusCode = 404;
+                      res.end(JSON.stringify({ error: "File not found" }));
+                    }
+                  } else {
+                    res.statusCode = 400;
+                    res.end(JSON.stringify({ error: "Invalid data" }));
+                  }
                 } catch (e) {
                   res.statusCode = 500;
                   res.end(JSON.stringify({ error: e.message }));
