@@ -1,8 +1,9 @@
 <script lang="ts">
   import productsData from './lib/products.json';
   import instagramIcon from './assets/instagram.svg';
-  import tiktokIcon from './assets/tiktok.svg';
-  import youtubeIcon from './assets/youtube.svg';
+  import AdminPanel from './lib/AdminPanel.svelte';
+  
+  const isDev = import.meta.env.DEV;
   
   interface Product {
     no?: string;
@@ -18,13 +19,18 @@
   let searchQuery = "";
   let isSearching = false;
   let searchTimeout: ReturnType<typeof setTimeout>;
-  let filteredProducts: Product[] = products;
+  let productsList = products; // Local state for products
+  let filteredProducts: Product[] = productsList;
+
+  function handleAdminUpdate(newProducts) {
+    productsList = newProducts;
+  }
 
   $: {
     isSearching = true;
     clearTimeout(searchTimeout);
     searchTimeout = setTimeout(() => {
-      filteredProducts = products.filter(p => 
+      filteredProducts = productsList.filter(p => 
         p.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
         p.no?.toLowerCase().includes(searchQuery.toLowerCase())
       );
@@ -74,14 +80,12 @@
   <div class="main-layout">
     <aside class="curator-card">
       <img src={curatorImg} alt="Raflya" class="curator-img" />
-      <h2 class="curator-name">Raflya, Affiliate Curator</h2>
+      <h2 class="curator-name">Rumondang Raflya Syahdani Harahap</h2>
       <p class="curator-bio">
         Mencari barang-barang pilihan terbaik untukmu. Diulas with cinta, ikuti terus untuk lebih banyak inspirasi!
       </p>
       <div class="social-links">
-        <span class="social-icon"><img src={instagramIcon} alt="Instagram" /></span>
-        <span class="social-icon"><img src={tiktokIcon} alt="TikTok" /></span>
-        <span class="social-icon"><img src={youtubeIcon} alt="YouTube" /></span>
+        <a href="https://instagram.com/raflyasyahdani11" target="_blank" rel="noopener noreferrer" class="social-icon"><img src={instagramIcon} alt="Instagram" /></a>
       </div>
     </aside>
 
@@ -169,14 +173,16 @@
   </div>
 </main>
 
+{#if isDev}
+  <AdminPanel bind:products={productsList} onUpdate={handleAdminUpdate} />
+{/if}
+
 <footer class="footer">
   <div class="footer-content">
     <div class="footer-top">
       <p style="font-size: 0.95rem;">© 2026 The Faith of Affiliate. Temukan produk favorit Anda! Ikuti kami:</p>
       <div class="social-links" style="gap: 15px;">
-        <span class="social-icon" style="filter: brightness(0) invert(1)"><img src={instagramIcon} alt="Instagram" /></span>
-        <span class="social-icon" style="filter: brightness(0) invert(1)"><img src={tiktokIcon} alt="TikTok" /></span>
-        <span class="social-icon" style="filter: brightness(0) invert(1)"><img src={youtubeIcon} alt="YouTube" /></span>
+        <a href="https://instagram.com/raflyasyahdani11" target="_blank" rel="noopener noreferrer" class="social-icon" style="filter: brightness(0) invert(1)"><img src={instagramIcon} alt="Instagram" /></a>
       </div>
       <div class="footer-links">
         <a href="/" class="footer-link">Kebijakan Privasi</a>
