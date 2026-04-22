@@ -65,8 +65,8 @@
 </script>
 
 <svelte:head>
-  <title>The Faith of Affiliate | {searchQuery ? `Hasil Cari: ${searchQuery}` : 'Cari produk pilihan favoritmu'}</title>
-  <meta name="description" content="Temukan koleksi produk pilihan terbaik mulai dari fashion, gadget, hingga dekorasi di The Faith of Affiliate." />
+  <title>The Fate of Affiliate | {searchQuery ? `Hasil Cari: ${searchQuery}` : 'Cari produk pilihan favoritmu'}</title>
+  <meta name="description" content="Temukan koleksi produk pilihan terbaik mulai dari fashion, gadget, hingga dekorasi di The Fate of Affiliate." />
 </svelte:head>
 
 <div class="bg-decor">
@@ -91,7 +91,7 @@
 
     <div class="content">
       <header class="header">
-        <h1 class="sr-only">The Faith of Affiliate - Katalog Produk Terpercaya</h1>
+        <h1 class="sr-only">The Fate of Affiliate - Katalog Produk Terpercaya</h1>
         <div class="search-container">
           <span class="search-icon">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
@@ -180,7 +180,7 @@
 <footer class="footer">
   <div class="footer-content">
     <div class="footer-top">
-      <p style="font-size: 0.95rem;">© 2026 The Faith of Affiliate. Temukan produk favorit Anda! Ikuti kami:</p>
+      <p style="font-size: 0.95rem;">© 2026 The Fate of Affiliate. Temukan produk favorit Anda! Ikuti kami:</p>
       <div class="social-links" style="gap: 15px;">
         <a href="https://instagram.com/raflyasyahdani11" target="_blank" rel="noopener noreferrer" class="social-icon" style="filter: brightness(0) invert(1)"><img src={instagramIcon} alt="Instagram" /></a>
       </div>

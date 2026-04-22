@@ -1,4 +1,4 @@
-# Svelte + Vite
+# The Fate of Affiliate
 
 This template should help get you started developing with Svelte in Vite.
 
