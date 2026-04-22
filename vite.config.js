@@ -66,20 +66,22 @@ export default defineConfig(({ mode }) => {
               req.on('data', chunk => { body += chunk; });
               req.on('end', async () => {
                 try {
-                  const { url, filename } = JSON.parse(body);
+                  const { url, filename, no } = JSON.parse(body);
                   const response = await fetch(url);
                   const buffer = await response.arrayBuffer();
                   
                   const dirPath = path.resolve(__dirname, 'public/images/products');
                   if (!fs.existsSync(dirPath)) fs.mkdirSync(dirPath, { recursive: true });
                   
-                  // Clean and truncate filename to prevent "filename too long" error
-                  const safeName = (filename || 'product')
-                    .replace(/[^a-z0-9]/gi, '_')
-                    .replace(/_{2,}/g, '_') // Remove multiple underscores
-                    .toLowerCase()
-                    .substring(0, 30); // Max 30 chars
-                  const finalName = `${safeName}_${Date.now()}.jpg`;
+                  // New format: ${no}_${firstWord}_${timestamp}.jpg
+                  const prefix = no ? `${no}_` : '';
+                  const firstWord = (filename || 'product')
+                    .trim()
+                    .split(/\s+/)[0]
+                    .replace(/[^a-z0-9]/gi, '')
+                    .toLowerCase();
+                  
+                  const finalName = `${prefix}${firstWord}_${Date.now()}.jpg`;
                   const filePath = path.join(dirPath, finalName);
                   
                   fs.writeFileSync(filePath, Buffer.from(buffer));

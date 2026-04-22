@@ -23,7 +23,7 @@
       const response = await fetch('/_admin/download-image', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ url, filename })
+        body: JSON.stringify({ url, filename, no: products[index].no })
       });
       const result = await response.json();
       if (result.path) {
