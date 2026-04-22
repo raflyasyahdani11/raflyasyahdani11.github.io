@@ -1,15 +1,21 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
+  
+  interface Product {
+    no?: string;
+    title: string;
+    desc: string;
+    img: string;
+    link?: string;
+  }
 
-  export let products = [];
-  export let onUpdate = (newProducts) => {};
+  export let products: Product[] = [];
+  export let onUpdate = (_newProducts: Product[]) => {};
 
   let isOpen = false;
-  let editingIdx = -1;
   let isDownloading = ""; // Stores index of downloading item
   let message = "";
 
-  async function downloadImage(url, filename, index) {
+  async function downloadImage(url: string, filename: string, index: number) {
     if (!url || !url.startsWith('http')) return;
     isDownloading = index.toString();
     
@@ -32,14 +38,14 @@
     }
   }
 
-  function handleImgInput(index) {
+  function handleImgInput(index: number) {
     const url = products[index].img;
     if (url && url.startsWith('http')) {
       downloadImage(url, products[index].title, index);
     }
   }
 
-  async function deleteImageFile(path) {
+  async function deleteImageFile(path: string) {
     if (!path || !path.startsWith('/images/products/')) return;
     try {
       await fetch('/_admin/delete-image', {
@@ -47,11 +53,6 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ path })
       });
-    } catch (e) {
-      console.error("Gagal hapus file gambar:", e);
-    }
-  }
-
     } catch (e) {
       console.error("Gagal hapus file gambar:", e);
     }
@@ -73,7 +74,7 @@
         message = `✅ Berhasil hapus ${result.deletedCount} file sampah`;
         setTimeout(() => message = "", 3000);
       }
-    } catch (e) {
+    } catch (e: any) {
       alert("Gagal cleanup: " + e.message);
     }
   }
@@ -91,7 +92,7 @@
       } else {
         throw new Error("Gagal menyimpan");
       }
-    } catch (e) {
+    } catch (e: any) {
       alert("Error: " + e.message);
     }
   }
@@ -99,7 +100,7 @@
 
 
   function addManual() {
-    const lastNo = products.length > 0 ? parseInt(products[products.length - 1].no) : 0;
+    const lastNo = products.length > 0 ? parseInt(products[products.length - 1].no || '0') : 0;
     const newNo = (lastNo + 1).toString().padStart(3, '0');
     
     const newProduct = {
@@ -123,7 +124,7 @@
         throw new Error("Format JSON tidak valid (minimal harus ada title)");
       }
 
-      const lastNo = products.length > 0 ? parseInt(products[products.length - 1].no) : 0;
+      const lastNo = products.length > 0 ? parseInt(products[products.length - 1].no || '0') : 0;
       const newNo = (lastNo + 1).toString().padStart(3, '0');
 
       const newProduct = {
@@ -146,14 +147,14 @@
       onUpdate(products);
       message = "✅ Berhasil import & generate data!";
       setTimeout(() => message = "", 3000);
-    } catch (e) {
+    } catch (e: any) {
       alert("Gagal import: " + e.message);
     }
   }
 
-  let selectedIndices = new Set();
+  let selectedIndices: Set<number> = new Set();
 
-  function toggleSelectAll(e) {
+  function toggleSelectAll(e: any) {
     if (e.target.checked) {
       selectedIndices = new Set(products.map((_, i) => i));
     } else {
@@ -162,7 +163,7 @@
     selectedIndices = selectedIndices;
   }
 
-  function toggleSelect(idx) {
+  function toggleSelect(idx: number) {
     if (selectedIndices.has(idx)) {
       selectedIndices.delete(idx);
     } else {
@@ -189,7 +190,7 @@
     }
   }
 
-  async function deleteProduct(idx) {
+  async function deleteProduct(idx: number) {
     if (confirm("Hapus produk ini beserta filenya?")) {
       const product = products[idx];
       if (product.img.startsWith('/images/products/')) {
@@ -380,9 +381,6 @@
     padding: 5px 10px;
     border-radius: 5px;
     cursor: pointer;
-  }
-  .btn-download {
-    font-size: 0.8rem;
   }
   .loading-spin {
     font-size: 1.2rem;

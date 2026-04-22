@@ -22,7 +22,7 @@
   let productsList = products; // Local state for products
   let filteredProducts: Product[] = productsList;
 
-  function handleAdminUpdate(newProducts) {
+  function handleAdminUpdate(newProducts: Product[]) {
     productsList = newProducts;
   }
 
