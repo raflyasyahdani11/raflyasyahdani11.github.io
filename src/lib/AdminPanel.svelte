@@ -16,13 +16,13 @@
   let message = "";
 
   async function downloadImage(url: string, filename: string, index: number) {
-    if (!url || !url.startsWith('http')) return;
+    if (!url || !url.startsWith("http")) return;
     isDownloading = index.toString();
     
     try {
-      const response = await fetch('/_admin/download-image', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("/_admin/download-image", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ url, filename, no: products[index].no })
       });
       const result = await response.json();
@@ -40,17 +40,17 @@
 
   function handleImgInput(index: number) {
     const url = products[index].img;
-    if (url && url.startsWith('http')) {
+    if (url && url.startsWith("http")) {
       downloadImage(url, products[index].title, index);
     }
   }
 
   async function deleteImageFile(path: string) {
-    if (!path || !path.startsWith('/images/products/')) return;
+    if (!path || !path.startsWith("/images/products/")) return;
     try {
-      await fetch('/_admin/delete-image', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      await fetch("/_admin/delete-image", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ path })
       });
     } catch (e) {
@@ -61,12 +61,12 @@
   async function cleanupUnusedImages() {
     if (!confirm("Hapus semua file gambar yang tidak dipakai di tabel?")) return;
     
-    const activeImages = products.map(p => p.img).filter(img => img.startsWith('/images/products/'));
+    const activeImages = products.map(p => p.img).filter(img => img.startsWith("/images/products/"));
     
     try {
-      const response = await fetch('/_admin/cleanup-images', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("/_admin/cleanup-images", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ activeImages })
       });
       const result = await response.json();
@@ -81,9 +81,9 @@
 
   async function saveToServer() {
     try {
-      const response = await fetch('/_admin/save-json', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("/_admin/save-json", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(products)
       });
       if (response.ok) {
@@ -100,8 +100,8 @@
 
 
   function addManual() {
-    const lastNo = products.length > 0 ? parseInt(products[products.length - 1].no || '0') : 0;
-    const newNo = (lastNo + 1).toString().padStart(3, '0');
+    const lastNo = products.length > 0 ? parseInt(products[products.length - 1].no || "0") : 0;
+    const newNo = (lastNo + 1).toString().padStart(3, "0");
     
     const newProduct = {
       no: newNo,
@@ -124,8 +124,8 @@
         throw new Error("Format JSON tidak valid (minimal harus ada title)");
       }
 
-      const lastNo = products.length > 0 ? parseInt(products[products.length - 1].no || '0') : 0;
-      const newNo = (lastNo + 1).toString().padStart(3, '0');
+      const lastNo = products.length > 0 ? parseInt(products[products.length - 1].no || "0") : 0;
+      const newNo = (lastNo + 1).toString().padStart(3, "0");
 
       const newProduct = {
         no: newNo,
@@ -140,7 +140,7 @@
       const newIdx = products.length - 1;
       
       // Jika ada gambar eksternal, otomatis download
-      if (newProduct.img.startsWith('http')) {
+      if (newProduct.img.startsWith("http")) {
         await downloadImage(newProduct.img, newProduct.title, newIdx);
       }
 
@@ -179,7 +179,7 @@
       
       // Hapus filenya satu per satu
       for (const product of toDelete) {
-        if (product.img.startsWith('/images/products/')) {
+        if (product.img.startsWith("/images/products/")) {
           await deleteImageFile(product.img);
         }
       }
@@ -193,7 +193,7 @@
   async function deleteProduct(idx: number) {
     if (confirm("Hapus produk ini beserta filenya?")) {
       const product = products[idx];
-      if (product.img.startsWith('/images/products/')) {
+      if (product.img.startsWith("/images/products/")) {
         await deleteImageFile(product.img);
       }
       products = products.filter((_, i) => i !== idx);
@@ -209,7 +209,7 @@
 
 <div class="admin-trigger">
   <button on:click={toggleAdmin} class="btn-toggle">
-    {isOpen ? 'Close Admin' : '⚙️ Admin Panel'}
+    {isOpen ? "Close Admin" : "⚙️ Admin Panel"}
   </button>
 </div>
 
@@ -255,7 +255,7 @@
       </thead>
       <tbody>
         {#each products as product, i}
-          <tr class={selectedIndices.has(i) ? 'selected' : ''}>
+          <tr class={selectedIndices.has(i) ? "selected" : ""}>
             <td><input type="checkbox" checked={selectedIndices.has(i)} on:change={() => toggleSelect(i)} /></td>
             <td><input type="text" bind:value={product.no} class="sm" /></td>
             <td><input type="text" bind:value={product.title} /></td>

@@ -54,13 +54,13 @@ function extractShopeeData() {
   // Special handling for Description to find by text if selectors fail
   let desc = getElementText(descSelectors);
   if (!desc) {
-    const allSpans = Array.from(document.querySelectorAll('span'));
-    const descLabel = allSpans.find(s => s.innerText.includes('Deskripsi Produk'));
+    const allSpans = Array.from(document.querySelectorAll("span"));
+    const descLabel = allSpans.find(s => s.innerText.includes("Deskripsi Produk"));
     if (descLabel && descLabel.parentElement) {
        // Usually the next sibling or a sibling of the parent contains the text
-       const container = descLabel.closest('div');
+       const container = descLabel.closest("div");
        if (container) {
-          desc = container.innerText.replace('Deskripsi Produk', '').trim();
+          desc = container.innerText.replace("Deskripsi Produk", "").trim();
        }
     }
   }

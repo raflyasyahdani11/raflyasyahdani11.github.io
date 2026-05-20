@@ -1,17 +1,17 @@
 let extractedData = null;
 
-document.addEventListener('DOMContentLoaded', async () => {
-  const extractBtn = document.getElementById('extract-btn');
-  const copyBtn = document.getElementById('copy-btn');
-  const statusMsg = document.getElementById('status');
-  const preview = document.getElementById('preview');
+document.addEventListener("DOMContentLoaded", async () => {
+  const extractBtn = document.getElementById("extract-btn");
+  const copyBtn = document.getElementById("copy-btn");
+  const statusMsg = document.getElementById("status");
+  const preview = document.getElementById("preview");
   
-  extractBtn.addEventListener('click', async () => {
+  extractBtn.addEventListener("click", async () => {
     statusMsg.innerText = "Extracting...";
     
     const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
     
-    if (!tab.url.includes('shopee.co.id')) {
+    if (!tab.url.includes("shopee.co.id")) {
       statusMsg.innerText = "Please navigate to a Shopee product page.";
       return;
     }
@@ -22,9 +22,9 @@ document.addEventListener('DOMContentLoaded', async () => {
       if (response && response.success) {
         extractedData = response.data;
         updatePreview(extractedData);
-        statusMsg.classList.add('hidden');
-        preview.classList.remove('hidden');
-        copyBtn.classList.remove('hidden');
+        statusMsg.classList.add("hidden");
+        preview.classList.remove("hidden");
+        copyBtn.classList.remove("hidden");
         extractBtn.innerText = "Re-extract";
       } else {
         statusMsg.innerText = "Failed to extract data. Make sure page is loaded.";
@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   });
 
-  copyBtn.addEventListener('click', async () => {
+  copyBtn.addEventListener("click", async () => {
     if (!extractedData) return;
     
     const jsonStr = JSON.stringify(extractedData, null, 2);
@@ -51,15 +51,15 @@ document.addEventListener('DOMContentLoaded', async () => {
       }, 2000);
     } catch (err) {
       statusMsg.innerText = "Failed to copy to clipboard.";
-      statusMsg.classList.remove('hidden');
+      statusMsg.classList.remove("hidden");
     }
   });
 });
 
 function updatePreview(data) {
-  document.getElementById('product-title').innerText = data.title || "No Title Found";
-  document.getElementById('product-desc').innerText = data.desc || "No Description Found";
-  const imgEl = document.getElementById('product-img');
+  document.getElementById("product-title").innerText = data.title || "No Title Found";
+  document.getElementById("product-desc").innerText = data.desc || "No Description Found";
+  const imgEl = document.getElementById("product-img");
   if (data.img) {
     imgEl.src = data.img;
   } else {

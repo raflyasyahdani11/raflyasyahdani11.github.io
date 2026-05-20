@@ -1,7 +1,8 @@
 <script lang="ts">
-  import productsData from './lib/products.json';
-  import instagramIcon from './assets/instagram.svg';
-  import AdminPanel from './lib/AdminPanel.svelte';
+  import { tick } from "svelte";
+  import productsData from "./lib/products.json";
+  import instagramIcon from "./assets/instagram.svg";
+  import AdminPanel from "./lib/AdminPanel.svelte";
   
   const isDev = import.meta.env.DEV;
   
@@ -14,7 +15,7 @@
   }
 
   const products: Product[] = productsData;
-  const curatorImg = '/images/3cc2cb34-25c8-480b-b590-ca330fdf9379.jpg';
+  const curatorImg = "/images/3cc2cb34-25c8-480b-b590-ca330fdf9379.jpg";
 
   let searchQuery = "";
   let isSearching = false;
@@ -50,22 +51,27 @@
   // Reset to first page when searching
   $: if (searchQuery) currentPage = 1;
 
-  const setPage = (p: number) => {
+  const setPage = async (p: number) => {
     if (p >= 1 && p <= totalPages) {
       currentPage = p;
-      const el = document.getElementById('product-list');
-      if (el) {
-        // Adjusting for sticky header height (approx 120px)
-        const offset = el.getBoundingClientRect().top + window.scrollY - 120;
-        window.scrollTo({ top: offset, behavior: 'smooth' });
-      }
+      await tick();
+      
+      // Delay slightly to ensure iOS Safari has fully rendered/settled the DOM changes
+      setTimeout(() => {
+        const el = document.getElementById("product-list");
+        if (el) {
+          // Adjusting for sticky header height (approx 120px)
+          const offset = el.getBoundingClientRect().top + window.scrollY - 120;
+          window.scrollTo({ top: offset, behavior: "smooth" });
+        }
+      }, 50);
     }
   };
 
 </script>
 
 <svelte:head>
-  <title>The Fate of Affiliate | {searchQuery ? `Hasil Cari: ${searchQuery}` : 'Cari produk pilihan favoritmu'}</title>
+  <title>The Fate of Affiliate | {searchQuery ? `Hasil Cari: ${searchQuery}` : "Cari produk pilihan favoritmu"}</title>
   <meta name="description" content="Temukan koleksi produk pilihan terbaik mulai dari fashion, gadget, hingga dekorasi di The Fate of Affiliate." />
 </svelte:head>
 
@@ -108,7 +114,7 @@
         </div>
       </header>
 
-      <div class="product-grid {isSearching ? 'searching' : ''}" id="product-list">
+      <div class="product-grid {isSearching ? "searching" : ""}" id="product-list">
         {#each paginatedProducts as product}
           <div class="product-card">
             <div class="product-img-wrapper">
@@ -117,14 +123,14 @@
                 alt={product.title} 
                 class="product-img" 
                 loading="lazy" 
-                on:load={(e) => (e.target as HTMLImageElement).classList.add('loaded')}
+                on:load={(e) => (e.target as HTMLImageElement).classList.add("loaded")}
               />
             </div>
             <div class="product-info">
               <h3 class="product-title">{product.title}</h3>
               <p class="product-desc">{product.desc}</p>
             </div>
-            <a href={product.link || '#'} target="_blank" rel="noopener noreferrer" class="btn-check" style="text-decoration: none; display: block; text-align: center;">
+            <a href={product.link || "#"} target="_blank" rel="noopener noreferrer" class="btn-check" style="text-decoration: none; display: block; text-align: center;">
               CEK SEKARANG
             </a>
           </div>
@@ -152,7 +158,7 @@
           
           {#each Array(totalPages) as _, i}
             <button 
-              class="page-item {currentPage === i + 1 ? 'active' : ''}" 
+              class="page-item {currentPage === i + 1 ? "active" : ""}" 
               on:click={() => setPage(i + 1)}
             >
               {i + 1}

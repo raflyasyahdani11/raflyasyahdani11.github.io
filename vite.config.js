@@ -1,26 +1,26 @@
-import { defineConfig, loadEnv } from 'vite'
-import { svelte } from '@sveltejs/vite-plugin-svelte'
-import fs from 'fs'
-import path from 'path'
+import { defineConfig, loadEnv } from "vite"
+import { svelte } from "@sveltejs/vite-plugin-svelte"
+import fs from "fs"
+import path from "path"
 
 // https://vite.dev/config/
 export default defineConfig(({ mode }) => {
-  const env = loadEnv(mode, process.cwd(), '');
-  const siteUrl = env.VITE_SITE_URL || '';
+  const env = loadEnv(mode, process.cwd(), "");
+  const siteUrl = env.VITE_SITE_URL || "";
 
   return {
     plugins: [
       svelte(),
       {
-        name: 'transform-public-files',
+        name: "transform-public-files",
         configureServer(server) {
           server.middlewares.use((req, res, next) => {
-            if (req.url === '/sitemap.xml' || req.url === '/robots.txt') {
-              const filePath = path.resolve(__dirname, 'public', req.url.slice(1));
+            if (req.url === "/sitemap.xml" || req.url === "/robots.txt") {
+              const filePath = path.resolve(__dirname, "public", req.url.slice(1));
               if (fs.existsSync(filePath)) {
-                let content = fs.readFileSync(filePath, 'utf-8');
+                let content = fs.readFileSync(filePath, "utf-8");
                 content = content.replace(/%VITE_SITE_URL%/g, siteUrl);
-                res.setHeader('Content-Type', req.url.endsWith('.xml') ? 'application/xml' : 'text/plain');
+                res.setHeader("Content-Type", req.url.endsWith(".xml") ? "application/xml" : "text/plain");
                 res.end(content);
                 return;
               }
@@ -29,12 +29,12 @@ export default defineConfig(({ mode }) => {
           });
         },
         closeBundle() {
-          const files = ['sitemap.xml', 'robots.txt'];
+          const files = ["sitemap.xml", "robots.txt"];
           if (!siteUrl) return;
           files.forEach(file => {
-            const filePath = path.resolve(__dirname, 'dist', file);
+            const filePath = path.resolve(__dirname, "dist", file);
             if (fs.existsSync(filePath)) {
-              let content = fs.readFileSync(filePath, 'utf-8');
+              let content = fs.readFileSync(filePath, "utf-8");
               content = content.replace(/%VITE_SITE_URL%/g, siteUrl);
               fs.writeFileSync(filePath, content);
             }
@@ -42,18 +42,18 @@ export default defineConfig(({ mode }) => {
         }
       },
       {
-        name: 'json-admin-api',
+        name: "json-admin-api",
         configureServer(server) {
           server.middlewares.use(async (req, res, next) => {
-            if (req.url === '/_admin/save-json' && req.method === 'POST') {
-              let body = '';
-              req.on('data', chunk => { body += chunk; });
-              req.on('end', () => {
+            if (req.url === "/_admin/save-json" && req.method === "POST") {
+              let body = "";
+              req.on("data", chunk => { body += chunk; });
+              req.on("end", () => {
                 try {
                   const products = JSON.parse(body);
-                  const filePath = path.resolve(__dirname, 'src/lib/products.json');
+                  const filePath = path.resolve(__dirname, "src/lib/products.json");
                   fs.writeFileSync(filePath, JSON.stringify(products, null, 2));
-                  res.setHeader('Content-Type', 'application/json');
+                  res.setHeader("Content-Type", "application/json");
                   res.statusCode = 200;
                   res.end(JSON.stringify({ success: true }));
                 } catch (e) {
@@ -61,24 +61,24 @@ export default defineConfig(({ mode }) => {
                   res.end(JSON.stringify({ error: e.message }));
                 }
               });
-            } else if (req.url?.startsWith('/_admin/download-image') && req.method === 'POST') {
-              let body = '';
-              req.on('data', chunk => { body += chunk; });
-              req.on('end', async () => {
+            } else if (req.url?.startsWith("/_admin/download-image") && req.method === "POST") {
+              let body = "";
+              req.on("data", chunk => { body += chunk; });
+              req.on("end", async () => {
                 try {
                   const { url, filename, no } = JSON.parse(body);
                   const response = await fetch(url);
                   const buffer = await response.arrayBuffer();
                   
-                  const dirPath = path.resolve(__dirname, 'public/images/products');
+                  const dirPath = path.resolve(__dirname, "public/images/products");
                   if (!fs.existsSync(dirPath)) fs.mkdirSync(dirPath, { recursive: true });
                   
                   // New format: ${no}_${firstWord}_${timestamp}.jpg
-                  const prefix = no ? `${no}_` : '';
-                  const firstWord = (filename || 'product')
+                  const prefix = no ? `${no}_` : "";
+                  const firstWord = (filename || "product")
                     .trim()
                     .split(/\s+/)[0]
-                    .replace(/[^a-z0-9]/gi, '')
+                    .replace(/[^a-z0-9]/gi, "")
                     .toLowerCase();
                   
                   const finalName = `${prefix}${firstWord}_${Date.now()}.jpg`;
@@ -86,21 +86,21 @@ export default defineConfig(({ mode }) => {
                   
                   fs.writeFileSync(filePath, Buffer.from(buffer));
                   
-                  res.setHeader('Content-Type', 'application/json');
+                  res.setHeader("Content-Type", "application/json");
                   res.end(JSON.stringify({ path: `/images/products/${finalName}` }));
                 } catch (e) {
                   res.statusCode = 500;
                   res.end(JSON.stringify({ error: e.message }));
                 }
               });
-            } else if (req.url === '/_admin/delete-image' && req.method === 'POST') {
-              let body = '';
-              req.on('data', chunk => { body += chunk; });
-              req.on('end', () => {
+            } else if (req.url === "/_admin/delete-image" && req.method === "POST") {
+              let body = "";
+              req.on("data", chunk => { body += chunk; });
+              req.on("end", () => {
                 try {
                   const { path: imgPath } = JSON.parse(body);
-                  if (imgPath && imgPath.startsWith('/images/products/')) {
-                    const fullPath = path.resolve(__dirname, 'public', imgPath.slice(1));
+                  if (imgPath && imgPath.startsWith("/images/products/")) {
+                    const fullPath = path.resolve(__dirname, "public", imgPath.slice(1));
                     if (fs.existsSync(fullPath)) {
                       fs.unlinkSync(fullPath);
                     }
@@ -111,17 +111,17 @@ export default defineConfig(({ mode }) => {
                   res.end(JSON.stringify({ error: e.message }));
                 }
               });
-            } else if (req.url === '/_admin/rename-image' && req.method === 'POST') {
-              let body = '';
-              req.on('data', chunk => { body += chunk; });
-              req.on('end', () => {
+            } else if (req.url === "/_admin/rename-image" && req.method === "POST") {
+              let body = "";
+              req.on("data", chunk => { body += chunk; });
+              req.on("end", () => {
                 try {
                   const { oldPath, newName } = JSON.parse(body);
-                  if (oldPath && oldPath.startsWith('/images/products/') && newName) {
-                    const dirPath = path.resolve(__dirname, 'public/images/products');
-                    const oldFullPath = path.resolve(__dirname, 'public', oldPath.slice(1));
+                  if (oldPath && oldPath.startsWith("/images/products/") && newName) {
+                    const dirPath = path.resolve(__dirname, "public/images/products");
+                    const oldFullPath = path.resolve(__dirname, "public", oldPath.slice(1));
                     
-                    const safeName = newName.replace(/[^a-z0-9]/gi, '_').replace(/_{2,}/g, '_').toLowerCase().substring(0, 30);
+                    const safeName = newName.replace(/[^a-z0-9]/gi, "_").replace(/_{2,}/g, "_").toLowerCase().substring(0, 30);
                     const newFileName = `${safeName}_${Date.now()}.jpg`;
                     const newFullPath = path.join(dirPath, newFileName);
 
@@ -141,13 +141,13 @@ export default defineConfig(({ mode }) => {
                   res.end(JSON.stringify({ error: e.message }));
                 }
               });
-            } else if (req.url === '/_admin/cleanup-images' && req.method === 'POST') {
-              let body = '';
-              req.on('data', chunk => { body += chunk; });
-              req.on('end', () => {
+            } else if (req.url === "/_admin/cleanup-images" && req.method === "POST") {
+              let body = "";
+              req.on("data", chunk => { body += chunk; });
+              req.on("end", () => {
                 try {
                   const { activeImages } = JSON.parse(body);
-                  const dirPath = path.resolve(__dirname, 'public/images/products');
+                  const dirPath = path.resolve(__dirname, "public/images/products");
                   if (fs.existsSync(dirPath)) {
                     const files = fs.readdirSync(dirPath);
                     let deletedCount = 0;
@@ -174,6 +174,6 @@ export default defineConfig(({ mode }) => {
         }
       }
     ],
-    base: '/',
+    base: "/",
   }
 })
