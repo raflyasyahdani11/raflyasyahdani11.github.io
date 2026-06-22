@@ -22,7 +22,7 @@
   let searchQuery = "";
   if (typeof window !== "undefined") {
     const params = new URLSearchParams(window.location.search);
-    searchQuery = params.get("search") || "";
+    searchQuery = params.get("product") || "";
   }
   let isSearching = false;
   let searchTimeout: ReturnType<typeof setTimeout>;
@@ -47,9 +47,9 @@
       if (typeof window !== "undefined") {
         const url = new URL(window.location.href);
         if (searchQuery) {
-          url.searchParams.set("search", searchQuery);
+          url.searchParams.set("product", searchQuery);
         } else {
-          url.searchParams.delete("search");
+          url.searchParams.delete("product");
         }
         window.history.replaceState({}, "", url.toString());
       }

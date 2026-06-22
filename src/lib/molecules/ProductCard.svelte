@@ -14,7 +14,7 @@
 
   async function shareProduct() {
     const searchVal = product.no || product.title;
-    const shareUrl = `${window.location.origin}${window.location.pathname}?search=${encodeURIComponent(searchVal)}`;
+    const shareUrl = `${window.location.origin}${window.location.pathname}?product=${encodeURIComponent(searchVal)}`;
     
     if (navigator.share) {
       try {
