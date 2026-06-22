@@ -18,6 +18,10 @@
   const curatorImg = "/images/3cc2cb34-25c8-480b-b590-ca330fdf9379.jpg";
 
   let searchQuery = "";
+  if (typeof window !== "undefined") {
+    const params = new URLSearchParams(window.location.search);
+    searchQuery = params.get("search") || "";
+  }
   let isSearching = false;
   let searchTimeout: ReturnType<typeof setTimeout>;
   let productsList = products; // Local state for products
@@ -25,6 +29,42 @@
 
   function handleAdminUpdate(newProducts: Product[]) {
     productsList = newProducts;
+  }
+
+  let copiedProductId: string | null = null;
+  let copyTimeout: ReturnType<typeof setTimeout>;
+
+  async function shareProduct(product: Product) {
+    const searchVal = product.no || product.title;
+    const shareUrl = `${window.location.origin}${window.location.pathname}?search=${encodeURIComponent(searchVal)}`;
+    
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: product.title,
+          text: `Cek produk pilihan ini: ${product.title}`,
+          url: shareUrl,
+        });
+      } catch (err) {
+        console.error("Error sharing:", err);
+        copyToClipboard(shareUrl, searchVal);
+      }
+    } else {
+      copyToClipboard(shareUrl, searchVal);
+    }
+  }
+
+  async function copyToClipboard(url: string, id: string) {
+    try {
+      await navigator.clipboard.writeText(url);
+      copiedProductId = id;
+      clearTimeout(copyTimeout);
+      copyTimeout = setTimeout(() => {
+        copiedProductId = null;
+      }, 2000);
+    } catch (err) {
+      console.error("Failed to copy link:", err);
+    }
   }
 
   $: {
@@ -36,6 +76,17 @@
         p.no?.toLowerCase().includes(searchQuery.toLowerCase())
       );
       isSearching = false;
+
+      // Update URL query parameter
+      if (typeof window !== "undefined") {
+        const url = new URL(window.location.href);
+        if (searchQuery) {
+          url.searchParams.set("search", searchQuery);
+        } else {
+          url.searchParams.delete("search");
+        }
+        window.history.replaceState({}, "", url.toString());
+      }
     }, 350);
   }
 
@@ -117,15 +168,28 @@
       <div class="product-grid {isSearching ? "searching" : ""}" id="product-list">
         {#each paginatedProducts as product}
           <div class="product-card">
-            <div class="product-img-wrapper">
-              <img 
-                src={product.img} 
-                alt={product.title} 
-                class="product-img" 
-                loading="lazy" 
-                on:load={(e) => (e.target as HTMLImageElement).classList.add("loaded")}
-              />
-            </div>
+             <div class="product-img-wrapper">
+               <img 
+                 src={product.img} 
+                 alt={product.title} 
+                 class="product-img" 
+                 loading="lazy" 
+                 on:load={(e) => (e.target as HTMLImageElement).classList.add("loaded")}
+               />
+               <button 
+                 class="btn-share" 
+                 on:click|stopPropagation|preventDefault={() => shareProduct(product)} 
+                 aria-label="Bagikan produk"
+                 title="Bagikan produk ini"
+               >
+                 {#if copiedProductId === (product.no || product.title)}
+                   <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                   <span class="tooltip">Tersalin!</span>
+                 {:else}
+                   <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+                 {/if}
+               </button>
+             </div>
             <div class="product-info">
               <h3 class="product-title">{product.title}</h3>
               <p class="product-desc">{product.desc}</p>
