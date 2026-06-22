@@ -2,6 +2,7 @@
   import { tick } from "svelte";
   import productsData from "./lib/products.json";
   import instagramIcon from "./assets/instagram.svg";
+  import threadsIcon from "./assets/threads.svg";
   import AdminPanel from "./lib/AdminPanel.svelte";
   import ProductCard from "./lib/molecules/ProductCard.svelte";
   import CuratorCard from "./lib/molecules/CuratorCard.svelte";
@@ -179,6 +180,7 @@
       <p style="font-size: 0.95rem;">© 2026 The Fate of Affiliate. Temukan produk favorit Anda! Ikuti kami:</p>
       <div class="social-links" style="gap: 15px;">
         <a href="https://instagram.com/raflyasyahdani11" target="_blank" rel="noopener noreferrer" class="social-icon" style="filter: brightness(0) invert(1)"><img src={instagramIcon} alt="Instagram" /></a>
+        <a href="https://www.threads.net/@raflyasyahdani11" target="_blank" rel="noopener noreferrer" class="social-icon" style="filter: brightness(0) invert(1)"><img src={threadsIcon} alt="Threads" /></a>
       </div>
       <div class="footer-links">
         <a href="/" class="footer-link">Kebijakan Privasi</a>
