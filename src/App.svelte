@@ -23,6 +23,12 @@
   if (typeof window !== "undefined") {
     const params = new URLSearchParams(window.location.search);
     searchQuery = params.get("product") || "";
+    if (!searchQuery) {
+      const match = window.location.pathname.match(/\/p\/([^/]+)/);
+      if (match) {
+        searchQuery = decodeURIComponent(match[1]);
+      }
+    }
   }
   let isSearching = false;
   let searchTimeout: ReturnType<typeof setTimeout>;
@@ -43,13 +49,18 @@
       );
       isSearching = false;
 
-      // Update URL query parameter
+      // Update URL path
       if (typeof window !== "undefined") {
         const url = new URL(window.location.href);
+        const base = import.meta.env.BASE_URL || "/";
+        const normalizedBase = base.endsWith("/") ? base : base + "/";
+
         if (searchQuery) {
-          url.searchParams.set("product", searchQuery);
+          url.pathname = `${normalizedBase}p/${encodeURIComponent(searchQuery)}/`;
+          url.search = "";
         } else {
-          url.searchParams.delete("product");
+          url.pathname = normalizedBase;
+          url.search = "";
         }
         window.history.replaceState({}, "", url.toString());
       }
@@ -85,11 +96,48 @@
     }
   };
 
+  // Find matching product for SEO metadata
+  $: activeProduct = searchQuery
+    ? productsList.find(p => 
+        p.no === searchQuery || 
+        p.title.toLowerCase() === searchQuery.toLowerCase()
+      )
+    : null;
+
+  $: pageTitle = activeProduct
+    ? `${activeProduct.title} | The Fate of Affiliate`
+    : (searchQuery ? `Hasil Cari: "${searchQuery}" | The Fate of Affiliate` : "The Fate of Affiliate | Cari produk pilihan favoritmu");
+
+  $: pageDesc = activeProduct
+    ? activeProduct.desc
+    : "Temukan koleksi produk pilihan terbaik mulai dari fashion, gadget, hingga dekorasi di The Fate of Affiliate.";
+
+  $: pageImg = activeProduct
+    ? (activeProduct.img.startsWith("http") ? activeProduct.img : `${typeof window !== "undefined" ? window.location.origin : ""}${activeProduct.img}`)
+    : `${typeof window !== "undefined" ? window.location.origin : ""}/images/curator.png`;
+
+  $: pageUrl = typeof window !== "undefined" ? window.location.href : "";
 </script>
 
 <svelte:head>
-  <title>The Fate of Affiliate | {searchQuery ? `Hasil Cari: ${searchQuery}` : "Cari produk pilihan favoritmu"}</title>
-  <meta name="description" content="Temukan koleksi produk pilihan terbaik mulai dari fashion, gadget, hingga dekorasi di The Fate of Affiliate." />
+  <title>{pageTitle}</title>
+  <meta name="description" content={pageDesc} />
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content={activeProduct ? "product" : "website"} />
+  <meta property="og:url" content={pageUrl} />
+  <meta property="og:title" content={pageTitle} />
+  <meta property="og:description" content={pageDesc} />
+  <meta property="og:image" content={pageImg} />
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:url" content={pageUrl} />
+  <meta name="twitter:title" content={pageTitle} />
+  <meta name="twitter:description" content={pageDesc} />
+  <meta name="twitter:image" content={pageImg} />
+
+  <link rel="canonical" href={pageUrl} />
 </svelte:head>
 
 <div class="bg-decor">

@@ -39,6 +39,67 @@ export default defineConfig(({ mode }) => {
               fs.writeFileSync(filePath, content);
             }
           });
+
+          // Generate static product pages for SEO
+          try {
+            const productsPath = path.resolve(__dirname, "src/lib/products.json");
+            if (fs.existsSync(productsPath)) {
+              const products = JSON.parse(fs.readFileSync(productsPath, "utf-8"));
+              const indexPath = path.resolve(__dirname, "dist/index.html");
+              if (fs.existsSync(indexPath)) {
+                const originalIndexHtml = fs.readFileSync(indexPath, "utf-8");
+                
+                products.forEach(product => {
+                  const productNo = product.no || product.title;
+                  if (!productNo) return;
+                  
+                  const safeNo = encodeURIComponent(productNo);
+                  const productDir = path.resolve(__dirname, "dist/p", safeNo);
+                  if (!fs.existsSync(productDir)) {
+                    fs.mkdirSync(productDir, { recursive: true });
+                  }
+                  
+                  const pTitle = `${product.title} | The Fate of Affiliate`;
+                  const pDesc = product.desc || "Temukan katalog produk pilihan terbaik.";
+                  let pImg = product.img || "";
+                  if (pImg && !pImg.startsWith("http")) {
+                    // Normalize relative path
+                    pImg = `${siteUrl.endsWith("/") ? siteUrl : siteUrl + "/"}${pImg.startsWith("/") ? pImg.slice(1) : pImg}`;
+                  }
+                  const pUrl = `${siteUrl.endsWith("/") ? siteUrl : siteUrl + "/"}p/${safeNo}/`;
+                  
+                  let indexHtml = originalIndexHtml;
+                  
+                  // 1. Replace <title>
+                  indexHtml = indexHtml.replace(/<title>.*?<\/title>/gi, `<title>${pTitle}</title>`);
+                  
+                  // 2. Replace description meta
+                  indexHtml = indexHtml.replace(/<meta\s+name=["']description["']\s+content=["'].*?["']\s*\/?>/gi, `<meta name="description" content="${pDesc}" />`);
+                  
+                  // 3. Replace Open Graph
+                  indexHtml = indexHtml.replace(/<meta\s+property=["']og:type["']\s+content=["'].*?["']\s*\/?>/gi, `<meta property="og:type" content="product" />`);
+                  indexHtml = indexHtml.replace(/<meta\s+property=["']og:title["']\s+content=["'].*?["']\s*\/?>/gi, `<meta property="og:title" content="${pTitle}" />`);
+                  indexHtml = indexHtml.replace(/<meta\s+property=["']og:description["']\s+content=["'].*?["']\s*\/?>/gi, `<meta property="og:description" content="${pDesc}" />`);
+                  indexHtml = indexHtml.replace(/<meta\s+property=["']og:image["']\s+content=["'].*?["']\s*\/?>/gi, `<meta property="og:image" content="${pImg}" />`);
+                  indexHtml = indexHtml.replace(/<meta\s+property=["']og:url["']\s+content=["'].*?["']\s*\/?>/gi, `<meta property="og:url" content="${pUrl}" />`);
+                  
+                  // 4. Replace Twitter
+                  indexHtml = indexHtml.replace(/<meta\s+property=["']twitter:title["']\s+content=["'].*?["']\s*\/?>/gi, `<meta property="twitter:title" content="${pTitle}" />`);
+                  indexHtml = indexHtml.replace(/<meta\s+property=["']twitter:description["']\s+content=["'].*?["']\s*\/?>/gi, `<meta property="twitter:description" content="${pDesc}" />`);
+                  indexHtml = indexHtml.replace(/<meta\s+property=["']twitter:image["']\s+content=["'].*?["']\s*\/?>/gi, `<meta property="twitter:image" content="${pImg}" />`);
+                  indexHtml = indexHtml.replace(/<meta\s+property=["']twitter:url["']\s+content=["'].*?["']\s*\/?>/gi, `<meta property="twitter:url" content="${pUrl}" />`);
+                  
+                  // 5. Replace Canonical URL
+                  indexHtml = indexHtml.replace(/<link\s+rel=["']canonical["']\s+href=["'].*?["']\s*\/?>/gi, `<link rel="canonical" href="${pUrl}" />`);
+                  
+                  fs.writeFileSync(path.join(productDir, "index.html"), indexHtml);
+                });
+                console.log(`[SEO-Generator] Generated ${products.length} product pages in dist/p/`);
+              }
+            }
+          } catch (err) {
+            console.error("[SEO-Generator] Error generating product SEO pages:", err);
+          }
         }
       },
       {

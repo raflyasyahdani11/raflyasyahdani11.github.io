@@ -14,7 +14,9 @@
 
   async function shareProduct() {
     const searchVal = product.no || product.title;
-    const shareUrl = `${window.location.origin}${window.location.pathname}?product=${encodeURIComponent(searchVal)}`;
+    const base = import.meta.env.BASE_URL || "/";
+    const normalizedBase = base.endsWith("/") ? base : base + "/";
+    const shareUrl = `${window.location.origin}${normalizedBase}p/${encodeURIComponent(searchVal)}/`;
     
     if (navigator.share) {
       try {
